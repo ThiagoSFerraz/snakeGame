@@ -4,6 +4,9 @@ let context = canvas.getContext("2d");
 let box = 32;
 let snake = [];
 
+let direction = "right";
+let game = setInterval(startGame, 100);
+
 snake[0] = {
   x: 8 * box,
   y: 8 * box,
@@ -21,5 +24,42 @@ function createSnake() {
   }
 }
 
-createBG();
-createSnake();
+document.addEventListener("keydown", update);
+
+function update(event) {
+  if (event.keyCode == 37 || (event.keyCode == 65 && direction != "right"))
+    direction = "left";
+  if (event.keyCode == 38 || (event.keyCode == 87 && direction != "down"))
+    direction = "up";
+  if (event.keyCode == 39 || (event.keyCode == 68 && direction != "left"))
+    direction = "right";
+  if (event.keyCode == 40 || (event.keyCode == 83 && direction != "up"))
+    direction = "down";
+}
+
+function startGame() {
+  if (snake[0].x > 15 * box && direction == "right") snake[0].x = 0;
+  if (snake[0].x < 0 && direction == "left") snake[0].x = 16 * box;
+  if (snake[0].y > 15 * box && direction == "down") snake[0].y = 0;
+  if (snake[0].y < 0 && direction == "up") snake[0].y = 16 * box;
+
+  let snakeX = snake[0].x;
+  let snakeY = snake[0].y;
+
+  if (direction == "right") snakeX += box;
+  if (direction == "left") snakeX -= box;
+  if (direction == "up") snakeY -= box;
+  if (direction == "down") snakeY += box;
+
+  createBG();
+  createSnake();
+
+  snake.pop();
+
+  let newHead = {
+    x: snakeX,
+    y: snakeY,
+  };
+
+  snake.unshift(newHead);
+}
